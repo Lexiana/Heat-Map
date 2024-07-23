@@ -33,6 +33,9 @@ d3.json(dataUrl).then((data) => {
     const year = dataset.map(d => d.year);
     const temperatures = dataset.map(d => d.variance + baseTemperature);
 
+    // change h2
+    document.getElementById("sub").textContent = `${d3.min(year)} - ${d3.max(year)}: base temperature ${baseTemperature}°C`;
+
 
 
     // create scales
