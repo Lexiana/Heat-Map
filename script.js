@@ -72,6 +72,7 @@ d3.json(dataUrl).then((data) => {
     const bandHeight = yScale.bandwidth();
     const heatMap = svg
         .append("g")
+        .attr("class", "heat-map")
         .selectAll(".cell")
         .data(dataset)
         .enter()
@@ -87,7 +88,8 @@ d3.json(dataUrl).then((data) => {
         .style("fill", d => colorScale(d.variance + baseTemperature));
 
     // add event listeners
-    heatMap.on("mouseover", (event, d) => {
+    heatMap.on("mouseover", function(event, d) {
+        d3.select(this).classed("cell-hover", true);
 
         // show tooltip
         tooltip.html(
@@ -95,14 +97,16 @@ d3.json(dataUrl).then((data) => {
             <p>${d3.format(".1f")(d.variance + baseTemperature)}°C</p>
              <p>${d3.format(".1f")(d.variance)}°C</p>`
         )
-
+        const offsetX = tooltip.node().getBoundingClientRect().width / 2;
+        const offsetY = tooltip.node().getBoundingClientRect().height*2; 
         tooltip.transition()
             .duration(0)
             .style("opacity", 0.8)
-            .style("left",  xScale(d.year)-tooltip.node().offsetWidth/2 +bandWidth + "px")
-            .style("bottom", -yScale(month[d.month - 1])+ height + bandHeight + "px");
+            .style("left", (event.pageX)- offsetX + "px")
+            .style("top", yScale(month[d.month - 1]) + height- offsetY + "px");
     })
-        .on("mouseout", () => {
+        .on("mouseout", function() {
+            d3.select(this).classed("cell-hover", false);
             tooltip.transition()
                 .duration(500)
                 .style("opacity", 0);
@@ -148,7 +152,7 @@ d3.json(dataUrl).then((data) => {
     const legendScale = d3.scaleLinear()
         .domain(colorScale.domain())
         .range([0, legendWidth]);
-    console.log(colorScale.domain())
+    
     // create legend axis
     const legendAxis = d3.axisBottom(legendScale)
         .tickFormat((d) => `${d}°C`)

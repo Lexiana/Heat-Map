@@ -37,9 +37,7 @@ body{
     margin-bottom: 2rem
 }
 
-.cell {
-    stroke: none;
-}
+
 
 #tooltip {
     position: absolute;
@@ -50,4 +48,9 @@ body{
     border: solid 1px white;
     border-radius: 5px;
     pointer-events: none;
+}
+
+.cell-hover {
+    stroke: black;
+    stroke-width: 2px;
 }
